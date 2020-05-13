@@ -116,10 +116,16 @@ class ArtsController():
         if line_shape is None:
             line_shape = ['Voigt_Kuntz6', 'VVH', 750e9]
         ws.abs_speciesSet(abs_species)
-        ws.abs_lineshapeDefine(*line_shape)
-        #ws.ReadXML(ws.abs_lines, abs_lines_file)
-        read_fn = getattr(ws, 'abs_linesReadFrom' + format)
-        read_fn(filename=abs_lines_file, fmin=float(0), fmax=float(10e12))
+        #ws.abs_lineshapeDefine(*line_shape)
+        
+        ws.ReadXML(ws.abs_lines, abs_lines_file)
+        
+        ws.abs_linesSetCutoff(ws.abs_lines, "ByLine", line_shape[2])
+        ws.abs_linesSetNormalization(ws.abs_lines, line_shape[1])
+        
+        #read_fn = getattr(ws, 'abs_linesReadFrom' + format)
+        #read_fn(filename=abs_lines_file, fmin=float(0), fmax=float(10e12))
+        
         ws.abs_lines_per_speciesCreateFromLines()
         ws.abs_f_interp_order = abs_f_interp_order
 
@@ -219,6 +225,14 @@ class ArtsController():
             field_name = 'wind_{}_field'.format(c)
             setattr(self.ws, field_name, field)
 
+        if self.atmosphere_dim == 1:
+            self.ws.AtmFieldsCalc(vmr_zeropadding=vmr_zeropadding)
+        else:
+            self.ws.AtmFieldsCalcExpand1D(vmr_zeropadding=vmr_zeropadding)
+
+    def set_atmosphere_fascod(self, fascod_name, vmr_zeropadding=False):
+        self.ws.AtmRawRead(basename="planets/Earth/Fascod/{}/{}".format(fascod_name, fascod_name))
+        
         if self.atmosphere_dim == 1:
             self.ws.AtmFieldsCalc(vmr_zeropadding=vmr_zeropadding)
         else:
