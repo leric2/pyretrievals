@@ -106,7 +106,9 @@ def run_checks(ws, negative_vmr_ok=False, bad_partition_functions_ok=False):
     ws.atmgeom_checkedCalc()
     ws.cloudbox_checkedCalc()
     ws.sensor_checkedCalc()
-
+    # new check for line by line calculation
+    print('checks done')
+    ws.lbl_checkedCalc()
 
 def set_variable_by_xml(ws, variable, data):
     """
