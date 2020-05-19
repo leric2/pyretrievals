@@ -11,6 +11,7 @@ pytest
 python-dotenv
 tqdm
 docopt
-#git+https://github.com/atmtools/typhon.git
+git+https://github.com/leric2/pyretrievals.git@master
+git+https://github.com/atmtools/typhon.git
 sphinx
 -e .
