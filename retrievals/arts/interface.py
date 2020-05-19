@@ -210,6 +210,8 @@ class ArtsController():
         self.ws.z_field_raw = atmosphere.z_field
         self.ws.vmr_field_raw = [atmosphere.vmr_field(mt) for mt in self.abs_species_maintags]
         self.ws.nlte_field_raw = None
+        # fix for arts2.3
+        self.ws.nlte_vibrational_energies = []
 
         for c in ('u', 'v', 'w'):
             try:
