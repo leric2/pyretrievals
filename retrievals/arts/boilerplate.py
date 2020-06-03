@@ -84,7 +84,8 @@ def setup_spectroscopy(ws, abs_lines, abs_species, line_shape=None):
     :type abs_lines: typhon.arts.catalogues.ArrayOfLineRecord
     """
     if line_shape is None:
-        line_shape = ['Voigt_Kuntz6', 'VVH', 750e9]
+        line_shape = ['VVH', 750e9]
+        
     ws.abs_speciesSet(abs_species)
     ws.abs_lineshapeDefine(*line_shape)
     ws.abs_lines = abs_lines
