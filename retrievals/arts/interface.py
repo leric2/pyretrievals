@@ -258,7 +258,7 @@ class ArtsController():
         else:
             self.ws.AtmFieldsCalcExpand1D(vmr_zeropadding=vmr_zeropadding)
 
-    def set_atmosphere_fascod(self, fascod_name, vmr_zeropadding=False):
+    def set_atmosphere_fascod(self, fascod_name, vmr_zeropadding=0):
         self.ws.AtmRawRead(basename="planets/Earth/Fascod/{}/{}".format(fascod_name, fascod_name))
         
         if self.atmosphere_dim == 1:
