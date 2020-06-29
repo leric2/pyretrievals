@@ -253,19 +253,19 @@ class ArtsController():
             field_name = 'wind_{}_field'.format(c)
             setattr(self.ws, field_name, field)
 
-        if self.atmosphere_dim == 1:
+        if  self.atmosphere_dim == 1:
             self.ws.AtmFieldsCalc(vmr_zeropadding=vmr_zeropadding)
         else:
             self.ws.AtmFieldsCalcExpand1D(vmr_zeropadding=vmr_zeropadding)
-
-    def set_atmosphere_fascod(self, fascod_name, vmr_zeropadding=0):
+    """
+    def set_atmosphere_fascod(self, fascod_name, vself.atmosphere_dimmr_zeropadding=0):
         self.ws.AtmRawRead(basename="planets/Earth/Fascod/{}/{}".format(fascod_name, fascod_name))
         
         if self.atmosphere_dim == 1:
             self.ws.AtmFieldsCalc(vmr_zeropadding=vmr_zeropadding)
         else:
             self.ws.AtmFieldsCalcExpand1D(vmr_zeropadding=vmr_zeropadding)
-
+    """
     def apply_hse(self, p_hse=100e2, z_hse_accuracy=0.5):
         """
         Calculate z field from hydrostatic equilibrium. See :arts:method:`z_fieldFromHSE`.

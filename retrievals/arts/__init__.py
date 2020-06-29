@@ -6,7 +6,7 @@ way.
 from dotenv import load_dotenv
 
 
-load_dotenv(dotenv_path='./.env')
+load_dotenv('/home/eric/Documents/PhD/ARTS/arts-examples/.env.t490-arts2.3')
 
 
 # Interface stuff
