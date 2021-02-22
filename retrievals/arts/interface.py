@@ -10,8 +10,11 @@ import datetime
 #load_dotenv(dotenv_path='./.env')
 
 from typhon.arts.workspace import Workspace, arts_agenda
-from typhon.arts import xml
-from typhon.arts.griddedfield import GriddedField3
+#from typhon.arts.workspace import Workspace
+#from pyarts.workspace import Workspace, arts_agenda
+#from pyarts.workspace import arts_agenda
+from pyarts import xml
+from pyarts.griddedfield import GriddedField3
 
 from retrievals.arts import boilerplate
 from retrievals.arts import retrieval
@@ -101,34 +104,33 @@ class ArtsController():
         boilerplate.setup_spectroscopy(self.ws, abs_lines, abs_species, line_shape)
         self.ws.abs_f_interp_order = abs_f_interp_order  # no effect for OnTheFly propmat
     
-    #TODO
-    # def set_spectroscopy_from_file2(self, abs_lines_file, abs_species,  format='HITRAN', line_shape=None, abs_f_interp_order=3):
-    #     """
-    #     Setup absorption species and spectroscopy data from HITRAN catalogue file.
+    def set_spectroscopy_from_file2(self, abs_lines_file, abs_species,  format='HITRAN', line_shape=None, abs_f_interp_order=3):
+        """
+        Setup absorption species and spectroscopy data from HITRAN catalogue file.
 
-    #     :param ws: The workspace.
-    #     :param basename:  Path to an XML file.
-    #     :param abs_species: List of abs species tags.
-    #     :param format: One of 'ARTSCAT', 'JPL', 'HITRAN' (and others for which a WSM `Read...` exists)
-    #     :param line_shape: Line shape definition. Default: ['VVH', 750e9]
-    #     :param f_abs_interp_order: No effect for OnTheFly propmat. Default: 3
-    #     """
-    #     ws = self.ws
-    #     if line_shape is None:
-    #         line_shape = ['VVH', 750e9]
+        :param ws: The workspace.
+        :param basename:  Path to an XML file.
+        :param abs_species: List of abs species tags.
+        :param format: One of 'ARTSCAT', 'JPL', 'HITRAN' (and others for which a WSM `Read...` exists)
+        :param line_shape: Line shape definition. Default: ['VVH', 750e9]
+        :param f_abs_interp_order: No effect for OnTheFly propmat. Default: 3
+        """
+        ws = self.ws
+        if line_shape is None:
+            line_shape = ['VVH', 750e9]
         
-    #     ws.abs_speciesSet(abs_species)
-    #     #ws.abs_lineshapeDefine(*line_shape)
+        ws.abs_speciesSet(abs_species)
+        #ws.abs_lineshapeDefine(*line_shape)
         
-    #     #TODO make it work for all types
-    #     read_fn = getattr(ws, 'Read' + format)
-    #     read_fn(ws.abs_lines, filename = abs_lines_file)
+        #TODO make it work for all types
+        read_fn = getattr(ws, 'Read' + format)
+        read_fn(ws.abs_lines, filename = abs_lines_file)
         
-    #     ws.abs_linesSetNormalization(ws.abs_lines, line_shape[0])
-    #     ws.abs_linesSetCutoff(ws.abs_lines, "ByLine", line_shape[1])
+        ws.abs_linesSetNormalization(ws.abs_lines, line_shape[0])
+        ws.abs_linesSetCutoff(ws.abs_lines, "ByLine", line_shape[1])
 
-    #     ws.abs_lines_per_speciesCreateFromLines()
-    #     ws.abs_f_interp_order = abs_f_interp_order    
+        ws.abs_lines_per_speciesCreateFromLines()
+        ws.abs_f_interp_order = abs_f_interp_order    
     
     def set_spectroscopy_from_file(self, abs_lines_file, abs_species, format='Arts', line_shape=None, abs_f_interp_order=3):
         """
@@ -144,7 +146,7 @@ class ArtsController():
         ws = self.ws
         if line_shape is None:
             line_shape = ['VVH', 750e9]
-        ws.abs_speciesSet(abs_species)
+        ws.abs_speciesSet(species=abs_species)
         #ws.abs_lineshapeDefine(*line_shape)
         
         ws.ReadXML(ws.abs_lines, abs_lines_file)
