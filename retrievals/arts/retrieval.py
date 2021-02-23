@@ -390,18 +390,20 @@ class GriddedRetrievalQuantity(RetrievalQuantity):
 class AbsSpecies(GriddedRetrievalQuantity):
     """Absorption species."""
 
+    # def __init__(self, species, p_grid, lat_grid, lon_grid, covmat,
+    #              method='analytical', unit='rel', for_species_tag=1, dx=0.001):
     def __init__(self, species, p_grid, lat_grid, lon_grid, covmat,
-                 method='analytical', unit='rel', for_species_tag=1, dx=0.001):
+                 unit='rel', for_species_tag=1):
         super().__init__('AbsSpecies',
                          p_grid=p_grid,
                          lat_grid=lat_grid,
                          lon_grid=lon_grid,
                          covmat=covmat,
                          species=species,
-                         method=method,
+                         #method=method,
                          unit=unit,
-                         for_species_tag=for_species_tag,
-                         dx=dx)
+                         for_species_tag=for_species_tag)#,
+                         #dx=dx)
 
     @property
     def species(self):
