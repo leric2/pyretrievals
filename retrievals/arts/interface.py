@@ -366,6 +366,7 @@ class ArtsController():
 
         if len(y_vars) != self.n_y:
             raise ValueError('Variance vector y_vars must have same length as y.')
+        
         ws.retrievalDefInit()
 
         # Retrieval quantities
@@ -450,7 +451,7 @@ class ArtsController():
 
     def get_level2_xarray(self):
         ds = xr.merge([rq.to_xarray() for rq in self.retrieval_quantities])
-
+    
         # Spectra
         f_backend = self._sensor.f_backend if self._sensor.f_backend is not None else self.f_grid
         ds['f'] = ('f', f_backend)
@@ -464,9 +465,15 @@ class ArtsController():
 
         # Observations
         for f in Observation._fields:
-            values = np.array([getattr(obs, f) for obs in self._observations], dtype=np.float)
-            ds['obs_'+f] = ('observation', values)
+            if f=='time':
+                time_value = np.array([getattr(obs, f) for obs in self._observations])
+                ds['obs_'+f] = ('observation', time_value)
+            else:
+                values = np.array([getattr(obs, f) for obs in self._observations], dtype=np.float)
+                ds['obs_'+f] = ('observation', values)
 
+        ds.coords['time'] = ds.obs_time
+        ds = ds.swap_dims({'observation':'time'}).reset_coords('observation')
         # Global attributes
         ds.attrs['arts_version'] = self.arts_version
         ds.attrs['uuid'] = str(uuid.uuid4())
