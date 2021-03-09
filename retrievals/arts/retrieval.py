@@ -165,7 +165,14 @@ class RetrievalQuantity:
 
         :rtype: xarray.Dataset
         """
-        prefix = self.slug + '_'
+        if '-' in self.slug or ' ' in self.slug or ',' in self.slug:
+            prefix = self.slug.replace(' ','_')
+            prefix = prefix.replace(',','_')
+            prefix = prefix.replace('-','_')
+            prefix = prefix.replace('__','_')
+            prefix = prefix + '_'
+        else:
+            prefix = self.slug + '_'
         shape = self.shape
         grid_names = [prefix + gn for gn in self.grid_names]
         grids = self.grids
