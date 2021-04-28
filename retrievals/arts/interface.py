@@ -458,6 +458,7 @@ class ArtsController():
         ds['y'] = (('observation', 'f'), np.stack(self.y))
         ds['yf'] = (('observation', 'f'), np.stack(self.yf))
         ds['oem_diagnostics'] = ('oem_diagnostics_idx', self.oem_diagnostics)
+        ds['median_noise'] = self.median_noise_level
 
         y_baseline = self.y_baseline
         if y_baseline is not None:
@@ -527,6 +528,10 @@ class ArtsController():
     def yf(self):
         yf = np.copy(self.ws.yf.value)
         return np.split(yf, self.n_obs)
+
+    @property
+    def median_noise_level(self):
+        return np.sqrt(np.median(self.noise_variance_vector))
 
     @property
     def y_baseline(self):
