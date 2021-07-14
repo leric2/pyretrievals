@@ -28,6 +28,7 @@ from .sensors import (
     SensorOff,
     SensorGaussian,
     SensorFFT,
+    SensorFFT_Sideband
 )
 
 

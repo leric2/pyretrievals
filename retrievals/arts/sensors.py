@@ -3,7 +3,7 @@ import numpy as np
 
 from typhon.arts.workspace import arts_agenda
 from typhon.arts.griddedfield import GriddedField1
-
+import matplotlib.pyplot as plt
 
 class AbstractSensor(ABC):
     """
@@ -94,6 +94,68 @@ class SensorFFT(AbstractSensor):
         def sensor_response_agenda(ws):
             ws.AntennaOff()
             ws.sensor_responseInit()
+            ws.sensor_responseBackend()
+
+        return sensor_response_agenda
+
+    @property
+    def f_backend(self):
+        return self._f_backend
+
+class SensorFFT_Sideband(AbstractSensor):
+    """
+    Sensor with channel response for an FFT Spectrometer with :math:`\mathrm{sinc}^2` response.
+
+    try to add sideband response
+    """
+
+    def __init__(self, f_backend, resolution, num_channels, lo_freq, sideband_mode, intermediate_freq, sideband_response):
+        """
+        :param f_backend: The backend frequency vector.
+        :param resolution: The frequency resolution of the FFTS in Hz
+        :param num_channels: Number of channels with nonzero response, default: 10
+        """
+        self._f_backend = f_backend
+        self.resolution = resolution
+        self.num_channels = num_channels
+        self.lo_freq = lo_freq
+        self.sideband_mode = sideband_mode
+
+        # Compute the backend channel response
+        grid = np.linspace(-self.num_channels / 2,
+                           self.num_channels / 2,
+                           20 * self.num_channels)
+        response = np.sinc(grid) ** 2
+        self.bcr = GriddedField1(name='Backend channel response function for FFTS',
+                                 gridnames=['Frequency'], dataname='Data',
+                                 grids=[self.resolution * grid],
+                                 data=response)
+
+        self.sideband_response = GriddedField1(name='Sideband response function for mixer',
+                         gridnames=['Frequency'], dataname='Data',
+                         grids=[intermediate_freq],
+                          data=sideband_response)
+
+
+    def apply(self, ws):
+        # Modify workspace
+        ws.FlagOn(ws.sensor_norm)
+        ws.f_backend = self.f_backend
+        ws.backend_channel_response = [self.bcr, ]
+        ws.lo = self.lo_freq
+        ws.sideband_mode = self.sideband_mode
+        ws.sideband_response = self.sideband_response
+
+        super().apply(ws)
+
+    @property
+    def sensor_response_agenda(self):
+        @arts_agenda
+        def sensor_response_agenda(ws):
+            ws.AntennaOff()
+            ws.sensor_responseInit()
+            ws.sensor_responseMixer(lo=self.lo_freq)
+            ws.sensor_responseIF2RF(sideband_mode=self.sideband_mode)
             ws.sensor_responseBackend()
 
         return sensor_response_agenda
